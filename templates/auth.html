@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ 'Login' if action == 'login' else 'Register' }}</title>
+    <style>
+        body { background: #1e1e2f; color: #e0e0e0; font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .auth-box { background: #2e2e42; padding: 30px; width: 360px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; margin-bottom: 20px; }
+        .auth-box input { width: 100%; padding: 10px; margin: 8px 0; border: none; border-radius: 4px; }
+        .auth-box button { width: 100%; padding: 12px; margin-top: 12px; border: none; background: #4CAF50; color: #fff; font-size: 16px; border-radius: 4px; cursor: pointer; }
+        .auth-box button:hover { background: #45a049; }
+        .toggle { text-align: center; margin-top: 10px; }
+        .toggle a { color: #4CAF50; text-decoration: none; }
+        .toggle a:hover { text-decoration: underline; }
+        .error { background: #ff4d4d; color: white; padding: 8px; margin-bottom: 10px; text-align: center; border-radius: 4px; }
+        .success { background: #4BB543; color: white; padding: 8px; margin-bottom: 10px; text-align: center; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        <h2>{{ 'Login' if action == 'login' else 'Register' }}</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for cat, msg in messages %}
+              <div class="{{ cat }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            {% if action == 'register' %}
+              <input type="password" name="confirm" placeholder="Confirm Password" required>
+            {% endif %}
+            <button type="submit">{{ 'Login' if action == 'login' else 'Register' }}</button>
+        </form>
+        <div class="toggle">
+            {% if action == 'login' %}
+              <a href="{{ url_for('register') }}">Create an account</a>
+            {% else %}
+              <a href="{{ url_for('login') }}">Back to login</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

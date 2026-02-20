@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LungDetect AI - Dashboard</title>
+    <style>
+        body {
+            background: #1e1e2f;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .top {
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin: 10px 0;
+        }
+
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container a {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container a:hover {
+            background-color: #45a049;
+        }
+
+        .bottom {
+            text-align: center;
+            max-width: 600px;
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <h1 style="color: #4CAF50;">LungDetect AI</h1>
+        <h2>Welcome, {{ username }}!</h2>
+    </div>
+
+    <!-- 🖼️ IMAGE SECTION -->
+    <div class="image-container">
+        <img src="/static/LungDetect AI.jpg" alt="Chest X-ray">
+
+        <!-- 🔘 BUTTONS BELOW IMAGE -->
+        <div class="button-container">
+            <a href="{{ url_for('diagnose') }}">Go to Diagnosis</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="bottom">
+        <p>
+            <strong>LungDetect AI</strong> is an AI-powered chest X-ray diagnosis system designed to assist healthcare professionals in identifying common thoracic conditions. It leverages deep learning to detect <em>Covid-19</em>, <em>Bacterial Pneumonia</em>, <em>Tuberculosis</em>, and distinguish them from <em>Normal</em> cases with high accuracy.
+        </p>
+    </div>
+</body>
+</html>

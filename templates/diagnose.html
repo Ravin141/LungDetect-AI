@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chest X-Ray Diagnosis</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .image-preview {
+            width: 300px;
+            height: 300px;
+            margin: auto;
+            overflow: hidden;
+            border: 2px solid #555;
+            border-radius: 10px;
+            background-color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .diagnosis {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 5px;
+        }
+
+        .diagnosis h2 {
+            color: #4CAF50;
+        }
+
+        .diagnosis p {
+            color: #fff;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #555;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+
+        #spinner {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .topbar a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="topbar">
+            <h2>Welcome, {{ username }}!</h2>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+        <div class="image-preview">
+            <img id="preview" src="#" alt="Image Preview">
+        </div>
+        <h2>Upload an Image</h2>
+        <form id="uploadForm">
+            <input type="file" name="file" accept="image/*" onchange="previewImage(event)">
+            <br>
+            <input type="button" value="Diagnose" onclick="sendImage()">
+        </form>
+
+        <!-- Spinner -->
+        <div id="spinner">
+            <img src="https://i.imgur.com/llF5iyg.gif" width="40" height="40" alt="Loading...">
+        </div>
+
+        <!-- Diagnosis output -->
+        <div class="diagnosis">
+            <h2>Diagnosis -</h2>
+            <p id="diagnosis"></p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('preview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function sendImage() {
+            var url = 'http://127.0.0.1:3562/predict';
+            var formData = new FormData();
+            var fileInput = document.querySelector('input[type="file"]');
+
+            if (!fileInput.files.length) {
+                alert("Please select an image first.");
+                return;
+            }
+
+            formData.append('file', fileInput.files[0]);
+
+            // Show spinner and reset diagnosis
+            document.getElementById('diagnosis').textContent = "Processing...";
+            document.getElementById('spinner').style.display = "inline-block";
+            const startTime = performance.now();
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    const endTime = performance.now();
+                    const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+                    document.getElementById('diagnosis').innerHTML =
+                        `${response.prediction} (${response.confidence})<br><small>Prediction time: ${duration}s</small>`;
+                },
+                error: function(error) {
+                    console.log("Error:", error);
+                    if (error.responseJSON && error.responseJSON.error) {
+                        document.getElementById('diagnosis').textContent = error.responseJSON.error;
+                    } else {
+                        document.getElementById('diagnosis').textContent = "Something went wrong.";
+                    }
+                },
+                complete: function() {
+                    document.getElementById('spinner').style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
