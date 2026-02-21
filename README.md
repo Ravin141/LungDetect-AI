@@ -56,8 +56,8 @@ The model predicts:
 
 ### 1. Clone the repository
 
-    git clone https://github.com/your-username/Chest-XRay-Disease-Detection.git
-    cd Chest-XRay-Disease-Detection
+    git clone https://github.com/Ravin141/LungDetect-AI.git
+    cd LungDetect-AI
 
 ### 2. Install dependencies
 
